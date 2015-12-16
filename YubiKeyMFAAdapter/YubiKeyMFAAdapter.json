@@ -1,0 +1,5 @@
+﻿{
+  "authId": "",
+  "apiKey": "",
+  "server": "https://api.yubico.com/wsapi/2.0/verify"
+}
