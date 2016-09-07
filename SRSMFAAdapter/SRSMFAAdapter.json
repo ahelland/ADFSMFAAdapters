@@ -1,0 +1,4 @@
+﻿{
+  //Change to the URL of your Function
+  "server": "https://FunctionApp.azurewebsites.net/api/FunctionName"
+}
