@@ -17,3 +17,27 @@ The corresponding Azure Function:
 The URL of the Azure Function should be pasted into the SRSMFAAdapter.json file.
 
 Don't go implementing this in a production system, but use it as a basis for testing/learning/playing around with MFA Adapters and/or Azure Functions :)
+
+#### Powershell for handling the SRS MFA Adapter ####
+```
+// Install
+Set-Location "C:\install"
+
+[System.Reflection.Assembly]::Load("System.EnterpriseServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+$publish = New-Object System.EnterpriseServices.Internal.Publish
+
+$publish.GacInstall("C:\install\SRSMFAAdapter\SRSMFAAdapter.dll")
+
+$fn = ([System.Reflection.Assembly]::LoadFile("C:\install\SRSMFAAdapter\SRSMFAAdapter.dll")).FullName
+
+$typeName = "MFAadapter.SRSMFAAdapter, " + $fn.ToString() + ", processorArchitecture=MSIL"
+Register-AdfsAuthenticationProvider -TypeName $typeName -Name "SRS MFA Adapter" -ConfigurationFilePath 'C:\install\SRSMFAAdapter\SRSMFAAdapter.json'
+net stop adfssrv
+net start adfssrv
+
+// Uninstall
+Unregister-AdfsAuthenticationProvider -Name "SRS MFA Adapter"
+net stop adfssrv
+net start adfssrv
+$publish.GacRemove("C:\install\SRSMFAAdapter\SRSMFAAdapter.dll")
+```
