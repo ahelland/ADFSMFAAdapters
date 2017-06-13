@@ -3,11 +3,13 @@
 
 ### Description
 
-This solution contains Custom Authentication Providers for ADFS. They are tested against ADFS 2016.
+This solution contains Custom Authentication Providers for ADFS. They are tested against ADFS 2016.  
+
+They should work with Windows Server 2012 R2 as well, but the Microsoft.IdentityServer.Web.dll files in this repo will not work! They are from Windows Server 2016, so they will confuse your server if your operating system is at a lower build. You can find your build specific files in the _C:\Windows\ADFS\_ directory of your ADFS Server.
 
 ## Register MFA Adapter ##
-Copy the dll to your ADFS server.
-Run the following script to install a custom adapter (using "dummy names and paths"):
+Copy the dlls to your ADFS server.
+Run the following scripts below to install a custom adapter (using "dummy names and paths"). These are the generic approach for performing the tasks; the adapter specific scripts are in their respective readme files.
 
 #### Gacutil Approach ####
 ```
