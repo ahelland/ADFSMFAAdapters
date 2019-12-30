@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using Claim = System.Security.Claims.Claim;
 
 namespace ADFSMFAAdapters
@@ -134,6 +135,7 @@ namespace ADFSMFAAdapters
 
             EventLog.WriteEntry("Application", "UPN: " + upn + " YubiId: " + yubikeyId, EventLogEntryType.Information);
             //Verify the user id portion of the YubiKey matches what's stored in AD
+            //The reason for the 8-character substring below is prefixing the actual id with "YubiKey:", so this can be changed as desired.
             if (userId != yubikeyId.Substring(8))
             {
                 EventLog.WriteEntry("Application", "YubiKey lookup in AD failed for UPN: " + upn, EventLogEntryType.Information);
@@ -142,18 +144,17 @@ namespace ADFSMFAAdapters
 
             byte[] hmacKey = Convert.FromBase64String(apiKey);
             //Parameters need to be in alphabetical order to generate a valid signature
-            var hmac = GenerateSignature($"id={authId}&nonce={nonce}&otp={otp}", hmacKey);
-
-            var queryString = ($"?id={authId}&otp={otp}&nonce={nonce}&h={hmac}");
-            var url = $"{server}{queryString}";
-
+            //hmac can contain characters needing urlencoding - note the returned hmac is not urlencoded
+            var hmac = HttpUtility.UrlEncode(GenerateSignature($"id={authId}&nonce={nonce}&otp={otp}", hmacKey));            
+            var queryString = $"?id={authId}&otp={otp}&nonce={nonce}&h={hmac}";
+            var url = $"{server}{queryString}";            
 
             HttpClient client = new HttpClient();
             var response = client.GetAsync(new Uri(url)).Result;
             string content = response.Content.ReadAsStringAsync().Result;
 
             string[] separators = new string[] { "\r\n" };
-            string[] result = content.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            string[] result = content.Split(separators, StringSplitOptions.RemoveEmptyEntries);            
 
             string outNonce = string.Empty;
             string outHmac = string.Empty;
@@ -214,8 +215,8 @@ namespace ADFSMFAAdapters
                 queryBuilder.AppendFormat("{0}={1}", pair.Key, pair.Value);
             }
 
-            var serverSignature = queryBuilder.ToString();
-            var signatureCheck = GenerateSignature(serverSignature, hmacKey);
+            var serverSignature = queryBuilder.ToString();           
+            var signatureCheck = GenerateSignature(serverSignature, hmacKey);            
 
             if (outNonce != nonce)
             {

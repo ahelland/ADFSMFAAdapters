@@ -1,16 +1,19 @@
-﻿## ADFS MFA Adapters - YubiKey
+﻿## ADFS MFA Adapters - YubiKey ##  
 
+### Description ###  
 
-### Description
-
-This solution contains an authentication adapter for use with YubiKeys.
+This solution contains an authentication adapter for use with YubiKeys. It has been tested to work on Windows Server 2019 including as a primary auth factor.
 
 Reference for the validation protocol: [https://developers.yubico.com/yubikey-val/Validation_Protocol_V2.0.html](https://developers.yubico.com/yubikey-val/Validation_Protocol_V2.0.html)  
-Sample code from YubiCo: [https://github.com/Yubico/yubico-dotnet-client/blob/master/YubicoDotNetClient/YubicoClient.cs](https://github.com/Yubico/yubico-dotnet-client/blob/master/YubicoDotNetClient/YubicoClient.cs)  
 
-#### Powershell for handling the YubiKey MFA Adapter ####
+Based on sample code from Yubico, and updated for the v2 Validation Protocol: [https://github.com/Yubico/yubico-dotnet-client/blob/master/YubicoDotNetClient/YubicoClient.cs](https://github.com/Yubico/yubico-dotnet-client/blob/master/YubicoDotNetClient/YubicoClient.cs)  
+
+### Configuration file ###
+The configuration settings are stored in _YubiKeyMFAAdapter.json_. The necessary id and key can be acquired from Yubico: [https://upgrade.yubico.com/getapikey/](https://upgrade.yubico.com/getapikey/)  
+
+#### Powershell for installing and uninstalling the YubiKey MFA Adapter ####
 ```
-// Install
+# Install
 Set-Location "C:\install"
 
 [System.Reflection.Assembly]::Load("System.EnterpriseServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
@@ -25,7 +28,7 @@ Register-AdfsAuthenticationProvider -TypeName $typeName -Name "YubiKey MFA Adapt
 net stop adfssrv
 net start adfssrv
 
-// Uninstall
+# Uninstall
 Unregister-AdfsAuthenticationProvider -Name "YubiKey MFA Adapter"
 net stop adfssrv
 net start adfssrv
