@@ -67,11 +67,11 @@ namespace ADFSMFAAdapters
                             apiKey = mfaConfig.apiKey;
                             server = mfaConfig.server;
 
-                            EventLog.WriteEntry("Application", "Config loaded with following authId: " + authId, EventLogEntryType.Information);
+                            EventLog.WriteEntry("AD FS", "YubiKey configuration loaded with following authId: " + authId, EventLogEntryType.Information, 335);                            
                         }
                         catch
                         {
-                            EventLog.WriteEntry("Application", "Unable to load config data. Check that it is registered and correct.", EventLogEntryType.Information);
+                            EventLog.WriteEntry("AD FS", "Unable to load YubiKey config data. Check that it is registered and correct.", EventLogEntryType.Information, 335);
                             throw new ArgumentException();
                         }
                     }
@@ -133,12 +133,12 @@ namespace ADFSMFAAdapters
             //First 12 digits/letters of OTP is the id for the YubiKey
             var userId = otp.Substring(0, 12);
 
-            EventLog.WriteEntry("Application", "UPN: " + upn + " YubiId: " + yubikeyId, EventLogEntryType.Information);
+            EventLog.WriteEntry("AD FS", "UPN: " + upn + " YubiId: " + yubikeyId, EventLogEntryType.Information, 335);
             //Verify the user id portion of the YubiKey matches what's stored in AD
             //The reason for the 8-character substring below is prefixing the actual id with "YubiKey:", so this can be changed as desired.
             if (userId != yubikeyId.Substring(8))
             {
-                EventLog.WriteEntry("Application", "YubiKey lookup in AD failed for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey lookup in AD failed for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
 
@@ -221,71 +221,71 @@ namespace ADFSMFAAdapters
             if (outNonce != nonce)
             {
                 //Nonce mismatch
-                EventLog.WriteEntry("Application", "YubiKey nonce mismatch for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey nonce mismatch for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outHmac != signatureCheck)
             {
                 //Signature mismatch (server sent a different signature than expected)
-                EventLog.WriteEntry("Application", "YubiKey signature mismatch for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey signature mismatch for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
 
             if (outStatus == "OK")
             {
                 //All is good
-                EventLog.WriteEntry("Application", "YubiKey OK for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey OK for UPN: " + upn, EventLogEntryType.Information, 335);
                 return true;
             }
             if (outStatus == "BAD_OTP")
             {
                 //OTP not valid
-                EventLog.WriteEntry("Application", "YubiKey BAD OTP for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey BAD OTP for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "REPLAYED_OTP")
             {
                 //OTP has already been used
-                EventLog.WriteEntry("Application", "YubiKey REPLAYED OTP for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey REPLAYED OTP for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "BAD_SIGNATURE")
             {
                 //Signature was incorrect
-                EventLog.WriteEntry("Application", "YubiKey BAD SIGNATURE for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey BAD SIGNATURE for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "MISSING_PARAMETER")
             {
                 //Something missing
-                EventLog.WriteEntry("Application", "YubiKey MISSING PARAMETER for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey MISSING PARAMETER for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "NO_SUCH_CLIENT")
             {
                 //Incorrect client
-                EventLog.WriteEntry("Application", "YubiKey NO SUCH CLIENT for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey NO SUCH CLIENT for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "OPERATION_NOT_ALLOWED")
             {
-                EventLog.WriteEntry("Application", "YubiKey OPERATION NOT ALLOWED for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey OPERATION NOT ALLOWED for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "BACKEND_ERROR")
             {
                 //Something wrong server side (Yubico)
-                EventLog.WriteEntry("Application", "YubiKey BACKEND ERROR for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey BACKEND ERROR for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "NOT_ENOUGH_ANSWERS")
             {
-                EventLog.WriteEntry("Application", "YubiKey NOT ENOUGH ANSWERS for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey NOT ENOUGH ANSWERS for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
             if (outStatus == "REPLAYED_REQUEST")
             {
-                EventLog.WriteEntry("Application", "YubiKey REPLAYED REQUEST for UPN: " + upn, EventLogEntryType.Information);
+                EventLog.WriteEntry("AD FS", "YubiKey REPLAYED REQUEST for UPN: " + upn, EventLogEntryType.Information, 335);
                 return false;
             }
 
