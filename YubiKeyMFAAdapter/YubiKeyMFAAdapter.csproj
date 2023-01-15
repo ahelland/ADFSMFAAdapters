@@ -70,12 +70,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LoginHtml.txt" />
+    <Content Include="Release\YubiKeyMFAAdapter.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
     <None Include="YubiKeyMFAAdapter.json" />
     <None Include="YubiKeyMFAAdapter.snk" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
